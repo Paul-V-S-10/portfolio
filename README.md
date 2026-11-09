@@ -1,36 +1,30 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Paul Varghese Shibu — 3D Portfolio
 
-## Getting Started
-
-First, run the development server:
+Next.js 15 · React Three Fiber · Framer Motion · Tailwind v4
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run dev     # http://localhost:3000
+npm run build   # production build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Editing content
+All text, projects, links and media live in **`src/data/portfolio.ts`**.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Adding photos
+1. Drop the image into `public/projects/` (e.g. `public/projects/wind-tunnel.jpg`).
+2. In `portfolio.ts`, add `image: "/projects/wind-tunnel.jpg"` to that project.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Profile photo: save as `public/profile.jpg` and set `photo: "/profile.jpg"` in `profile`.
 
-## Learn More
+### Adding a Google Drive video / report
+Add `{ label: "Flight Video", kind: "video", drive: "<FILE_ID>" }` to the project's `media` array.
+The file must be shared as **Anyone with the link → Viewer**. The card thumbnail is pulled
+from Drive automatically when you set `thumbDrive: "<FILE_ID>"`.
 
-To learn more about Next.js, take a look at the following resources:
+## 3D scenes
+- `src/components/three/parts.tsx`: procedural quadcopter, gears and rocket engine (no model files).
+- `HeroScene.tsx`: the drone banks toward the cursor and climbs as you scroll.
+- `EngineScene.tsx`: a bell nozzle with a hot-fire plume (drag to rotate).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Deploy
+Push the `website` folder to GitHub and import it into Vercel (zero config).

@@ -1,26 +1,175 @@
 @import "tailwindcss";
 
+/*
+  Palette: "hot fire" — near-black, afterburner red and ember orange.
+  (Token names cyan/orange are kept so components stay stable:
+   cyan = ember accent, orange = signal red.)
+*/
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #0a0808;
+  --bg-2: #120d0c;
+  --panel: rgba(22, 16, 15, 0.78);
+  --line: rgba(255, 240, 232, 0.08);
+  --line-strong: rgba(255, 240, 232, 0.2);
+  --ink: #f4ede9;
+  --muted: #a39894;
+  --cyan: #ff6a3d;
+  --orange: #e3122b;
+  --steel: #cfc6c2;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-bg: var(--bg);
+  --color-bg-2: var(--bg-2);
+  --color-panel: var(--panel);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-cyan: var(--cyan);
+  --color-orange: var(--orange);
+  --color-steel: var(--steel);
+  --font-sans: var(--font-sans-face), ui-sans-serif, system-ui;
+  --font-mono: var(--font-mono-face), ui-monospace, monospace;
+  --font-display: var(--font-display-face), Impact, sans-serif;
+  --font-script: var(--font-script-face), cursive;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/*
+  Cards slide in from off-screen (x: ±100px). Without clipping, those transforms widen the
+  layout viewport on phones and the whole page renders zoomed-out with a sideways scroll.
+  `clip` (unlike `hidden`) doesn't create a scroll container, so position: sticky keeps working;
+  `hidden` on <html> is the fallback for browsers without `clip` (it applies to the viewport).
+*/
+html {
+  scroll-behavior: smooth;
+  background: var(--bg);
+  overflow-x: hidden;
+  overflow-x: clip;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  overflow-x: clip;
+}
+
+main > section,
+main > div {
+  overflow-x: clip;
+}
+
+/*
+  Ultra-wide and 4K monitors: grow the whole rem-based layout (type, spacing, the 80rem
+  content column) in proportion to the screen, like a browser zoom, instead of leaving a
+  narrow 1280px column in a sea of black. 16px at 1920 → 21px at 2560 → capped at 24px.
+*/
+@media (min-width: 1920px) {
+  html {
+    font-size: min(calc(100vw / 120), 24px);
+  }
+}
+
+::selection {
+  background: var(--orange);
+  color: #fff;
+}
+
+/* engineering grid paper, very faint */
+.blueprint {
+  background-image:
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px),
+    linear-gradient(rgba(255, 240, 232, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 240, 232, 0.025) 1px, transparent 1px);
+  background-size: 96px 96px, 96px 96px, 24px 24px, 24px 24px;
+  background-position: -1px -1px;
+}
+
+/* film grain overlay */
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+/* CAD-style corner brackets */
+.brackets {
+  position: relative;
+}
+.brackets::before,
+.brackets::after {
+  content: "";
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-color: var(--orange);
+  opacity: 0.7;
+  pointer-events: none;
+  transition: all 0.3s ease;
+}
+.brackets::before {
+  top: -1px;
+  left: -1px;
+  border-top: 1.5px solid;
+  border-left: 1.5px solid;
+}
+.brackets::after {
+  bottom: -1px;
+  right: -1px;
+  border-bottom: 1.5px solid;
+  border-right: 1.5px solid;
+}
+.brackets:hover::before,
+.brackets:hover::after {
+  width: 28px;
+  height: 28px;
+  border-color: var(--cyan);
+  opacity: 1;
+}
+
+.hazard {
+  background: repeating-linear-gradient(-45deg, var(--orange) 0 8px, transparent 8px 16px);
+}
+
+/* giant outlined display type */
+.outline-text {
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(255, 240, 232, 0.18);
+}
+
+/* cut-out sticker with a red outline (stacked drop-shadows) */
+.sticker {
+  filter: drop-shadow(5px 0 0 var(--orange)) drop-shadow(-5px 0 0 var(--orange)) drop-shadow(0 5px 0 var(--orange))
+    drop-shadow(0 -5px 0 var(--orange)) drop-shadow(0 30px 40px rgba(0, 0, 0, 0.6));
+}
+
+.fade-bottom {
+  -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent 98%);
+  mask-image: linear-gradient(to bottom, #000 55%, transparent 98%);
+}
+
+@keyframes spin-slow { to { transform: rotate(360deg); } }
+.spin-slow { animation: spin-slow 18s linear infinite; }
+.spin-rev { animation: spin-slow 12s linear infinite reverse; }
+
+@keyframes marquee { to { transform: translateX(-50%); } }
+.marquee { animation: marquee 32s linear infinite; }
+
+.text-glow {
+  text-shadow: 0 0 40px rgba(227, 18, 43, 0.45);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
 }
